@@ -7,7 +7,8 @@
       "extensions": [
         "eamodio.gitlens",
         "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss"
       ],
       "settings": {
         "prettier.configPath": ".prettierrc.json",
@@ -16,7 +17,10 @@
         "editor.codeActionsOnSave": {
           "source.fixAll.eslint": "explicit"
         },
-        "editor.tabSize": 2
+        "editor.tabSize": 2,
+        "files.associations": {
+          "*.css": "tailwindcss"
+        }
       }
     }
   }
