@@ -1,7 +1,14 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { ActionFunctionArgs, redirect, type MetaFunction } from '@remix-run/cloudflare';
-import { useActionData, Form } from '@remix-run/react';
+import { useActionData, Form, useNavigation } from '@remix-run/react';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '~/components/ui/alert-dialog';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
@@ -48,6 +55,8 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   const lastResult = useActionData<typeof action>();
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === 'submitting';
 
   const [form, fields] = useForm({
     lastResult,
@@ -98,6 +107,17 @@ export default function Index() {
 
         <Button>Send</Button>
       </Form>
+
+      <AlertDialog open={isSubmitting}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Processing...</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please wait. This process takes approximately 1 minute. Do not close the browser.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
