@@ -3,6 +3,7 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { ActionFunctionArgs, redirect, type MetaFunction } from '@remix-run/cloudflare';
 import { useActionData, Form, useNavigation } from '@remix-run/react';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -72,6 +73,8 @@ export default function Index() {
     const errors = form.errors ?? [];
     if (navigation.state === 'idle' && errors.length === 0) {
       form.reset();
+
+      toast.success('Input attendance completed!');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- prevent infinit loop
   }, [navigation.state]);
