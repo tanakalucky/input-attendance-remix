@@ -2,6 +2,7 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { ActionFunctionArgs, redirect, type MetaFunction } from '@remix-run/cloudflare';
 import { useActionData, Form, useNavigation } from '@remix-run/react';
+import { useEffect } from 'react';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -66,6 +67,14 @@ export default function Index() {
       return parseWithZod(formData, { schema });
     },
   });
+
+  useEffect(() => {
+    const errors = form.errors ?? [];
+    if (navigation.state === 'idle' && errors.length === 0) {
+      form.reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- prevent infinit loop
+  }, [navigation.state]);
 
   return (
     <div className='w-full h-full'>
