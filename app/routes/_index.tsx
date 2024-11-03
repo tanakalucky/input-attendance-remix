@@ -15,14 +15,20 @@ const schema = z
     attendances: z.string().min(1),
   })
   .transform((val) => {
-    const { year, month, attendances } = JSON.parse(val.attendances.replace(/\s+/g, ''));
+    let parsedData;
+    try {
+      const { year, month, attendances } = JSON.parse(val.attendances.replace(/\s/g, ''));
+      parsedData = { year, month, attendances };
+    } catch (error) {
+      throw new Error('Invalid json format');
+    }
 
     const data = {
       loginId: val.loginId,
       loginPw: val.loginPw,
-      year: Number(year),
-      month: Number(month),
-      attendances,
+      year: Number(parsedData.year),
+      month: Number(parsedData.month),
+      attendances: parsedData.attendances,
     };
 
     return data;
@@ -87,7 +93,7 @@ export default function Index() {
 
         <div className='flex flex-col flex-1 gap-2'>
           <Label htmlFor={fields.attendances.id}>attendances</Label>
-          <Textarea {...getInputProps(fields.attendances, { type: 'text' })} className='h-50' />
+          <Textarea {...getInputProps(fields.attendances, { type: 'text' })} className='h-64' />
           <div id={fields.attendances.errorId} className='text-red-500'>
             {fields.attendances.errors}
           </div>
