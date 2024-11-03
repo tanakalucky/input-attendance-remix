@@ -2,37 +2,11 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { ActionFunctionArgs, redirect, type MetaFunction } from '@remix-run/cloudflare';
 import { useActionData, Form } from '@remix-run/react';
-import { z } from 'zod';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Textarea } from '~/components/ui/textarea';
-
-const schema = z
-  .object({
-    loginId: z.string().min(1),
-    loginPw: z.string().min(1),
-    attendances: z.string().min(1),
-  })
-  .transform((val) => {
-    let parsedData;
-    try {
-      const { year, month, attendances } = JSON.parse(val.attendances.replace(/\s/g, ''));
-      parsedData = { year, month, attendances };
-    } catch (error) {
-      throw new Error('Invalid json format');
-    }
-
-    const data = {
-      loginId: val.loginId,
-      loginPw: val.loginPw,
-      year: Number(parsedData.year),
-      month: Number(parsedData.month),
-      attendances: parsedData.attendances,
-    };
-
-    return data;
-  });
+import { schema } from '~/schema';
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -45,13 +19,25 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   const env = context.cloudflare.env as Env;
 
-  await fetch(env.API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(submission.value),
-  });
+  try {
+    const response = await fetch(env.API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
+    });
+
+    if (response.status !== 200) {
+      return submission.reply({
+        formErrors: ['Failed to input attendance.'],
+      });
+    }
+  } catch {
+    return submission.reply({
+      formErrors: ['Failed to input attendance. Please try again later.'],
+    });
+  }
 
   return redirect('/');
 }
@@ -75,6 +61,10 @@ export default function Index() {
   return (
     <div className='w-full h-full'>
       <Form method='POST' {...getFormProps(form)} className='flex flex-col w-[50%] m-auto gap-4'>
+        <div id={form.errorId} className='text-red-500'>
+          {form.errors}
+        </div>
+
         <div className='flex flex-col gap-2'>
           <Label htmlFor={fields.loginId.id}>login id</Label>
           <Input {...getInputProps(fields.loginId, { type: 'text' })} />
