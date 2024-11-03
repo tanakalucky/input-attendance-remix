@@ -25,7 +25,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify(submission.value),
     });
 
     if (response.status !== 200) {

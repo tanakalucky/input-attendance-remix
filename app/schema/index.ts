@@ -7,9 +7,6 @@ export const schema = z
     attendances: z
       .string()
       .min(1)
-      .transform((val) => {
-        return val.replace(/\s/g, '');
-      })
       .superRefine((val, ctx) => {
         let parsedData;
 
@@ -83,11 +80,8 @@ const attendancesSchema = z
       .min(1)
       .refine(
         (val) => {
-          try {
-            new Date(val);
-          } catch {
-            return false;
-          }
+          const date = new Date(val);
+          return !isNaN(date.getTime());
         },
         { message: 'Invalid date format' },
       ),
