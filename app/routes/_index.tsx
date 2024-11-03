@@ -67,7 +67,7 @@ export default function Index() {
 
         <div className='flex flex-col gap-2'>
           <Label htmlFor={fields.loginId.id}>login id</Label>
-          <Input {...getInputProps(fields.loginId, { type: 'text' })} />
+          <Input {...getInputProps(fields.loginId, { type: 'text' })} aria-invalid={Boolean(fields.loginId.errors)} />
           <div id={fields.loginId.errorId} className='text-red-500'>
             {fields.loginId.errors}
           </div>
@@ -75,7 +75,10 @@ export default function Index() {
 
         <div className='flex flex-col gap-2'>
           <Label htmlFor={fields.loginPw.id}>login password</Label>
-          <Input {...getInputProps(fields.loginPw, { type: 'password' })} />
+          <Input
+            {...getInputProps(fields.loginPw, { type: 'password' })}
+            aria-invalid={Boolean(fields.loginPw.errors)}
+          />
           <div id={fields.loginPw.errorId} className='text-red-500'>
             {fields.loginPw.errors}
           </div>
@@ -83,7 +86,11 @@ export default function Index() {
 
         <div className='flex flex-col flex-1 gap-2'>
           <Label htmlFor={fields.attendances.id}>attendances</Label>
-          <Textarea {...getInputProps(fields.attendances, { type: 'text' })} className='h-64' />
+          <Textarea
+            {...getInputProps(fields.attendances, { type: 'text' })}
+            className='h-64'
+            aria-invalid={Boolean(fields.attendances.errors)}
+          />
           <div id={fields.attendances.errorId} className='text-red-500'>
             {fields.attendances.errors}
           </div>
